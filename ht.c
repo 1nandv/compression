@@ -22,7 +22,7 @@ static uint32_t ht_hash_key(const char *key)
     return hash;
 }
 
-ht_t *ht_new()
+ht_t *ht_new(void)
 {
     ht_t *ht = malloc(sizeof(ht_t));
 

@@ -22,7 +22,7 @@ typedef struct {
 
 static uint32_t ht_hash_key(const char *key);
 
-ht_t *ht_new();
+ht_t *ht_new(void);
 void ht_free(ht_t *ht);
 
 void *ht_get(ht_t *ht, const char *key);
