@@ -31,16 +31,16 @@ ht_t *ht_new(void)
 
     ht->capacity = INITIAL_CAPACITY;
     ht->length = 0;
-    ht->entries = calloc(ht->capacity, sizeof(ht_entry_t));
+    ht->entries = calloc(INITIAL_CAPACITY, sizeof(ht_entry_t));
 
+    if(ht->entries == NULL)
+        return NULL;
+    
     return ht;
 }
 
 void ht_free(ht_t *ht)
 {
-    for(size_t i = 0; i <= ht->length; i++)
-        free(ht->entries[i]);
-
     free(ht->entries);
     free(ht);
 }
@@ -50,9 +50,9 @@ void *ht_get(ht_t *ht, const char *key)
     uint32_t hash = ht_hash_key(key);
     size_t index = (size_t)(hash & (uint32_t)(ht->capacity - 1));
 
-    while(ht->entries[index]->key != NULL) {
-        if(strcmp(key, ht->entries[index]->key) == 0)
-            return ht->entries[index]->value;
+    while(ht->entries[index].key != NULL) {
+        if(strcmp(key, ht->entries[index].key) == 0)
+            return ht->entries[index].value;
 
         index++;
     
@@ -71,10 +71,10 @@ const char *ht_set(ht_t *ht, const char *key, void *value)
     uint32_t hash = ht_hash_key(key);
     size_t index = (size_t)(hash & (uint32_t)(ht->capacity - 1));
 
-    while(ht->entries[index]->key != NULL) {
-        if(strcmp(key, ht->entries[index]->key) == 0) {
-            ht->entries[index]->value = value;
-            return ht->entries[index]->key;
+    while(ht->entries[index].key != NULL) {
+        if(strcmp(key, ht->entries[index].key) == 0) {
+            ht->entries[index].value = value;
+            return ht->entries[index].key;
         }
 
         index++;
@@ -83,11 +83,11 @@ const char *ht_set(ht_t *ht, const char *key, void *value)
             index = 0;
     }
 
-    ht->entries[index]->key = strdup(key);
-    ht->entries[index]->value = value;
+    ht->entries[index].key = strdup(key);
+    ht->entries[index].value = value;
     ht->length++; 
 
-    return ht->entries[index]->key;
+    return ht->entries[index].key;
 }
 
 uint8_t ht_grow(ht_t *ht)
@@ -103,10 +103,8 @@ uint8_t ht_grow(ht_t *ht)
         return 1;
 
     for(size_t i = 0; i < ht->capacity; i++) {
-        if(ht->entries[i]->key != NULL) {
-            ht_set(new_ht, ht->entries[i]->key, ht->entries[i]->value);
-            free(ht->entries[i]);
-        }
+        if(ht->entries[i].key != NULL)
+            ht_set(new_ht, ht->entries[i].key, ht->entries[i].value);
     }
 
     free(ht->entries);

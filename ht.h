@@ -11,7 +11,7 @@ typedef struct {
 typedef struct {
     size_t capacity;
     size_t length;
-    ht_entry_t** entries;
+    ht_entry_t* entries;
 } ht_t;
 
 // todo: implement iterator
