@@ -31,7 +31,7 @@ ht_t *ht_new(void)
 
     ht->capacity = INITIAL_CAPACITY;
     ht->length = 0;
-    ht->entries = calloc(INITIAL_CAPACITY, sizeof(ht_entry_t));
+    ht->entries = calloc(ht->capacity, sizeof(ht_entry_t));
 
     if(ht->entries == NULL)
         return NULL;
@@ -96,8 +96,9 @@ uint8_t ht_grow(ht_t *ht)
     if(new_ht == NULL)
         return 1;
 
+    // just set capacity and entries, we don't care about length
+    // in new_ht
     new_ht->capacity = ht->capacity * 2;
-    new_ht->length = ht->length;
     new_ht->entries = calloc(new_ht->capacity, sizeof(ht_entry_t));
     if(new_ht->entries == NULL)
         return 1;
@@ -108,8 +109,8 @@ uint8_t ht_grow(ht_t *ht)
     }
 
     free(ht->entries);
-    free(ht);
-    ht = new_ht;
+    ht->entries = new_ht->entries;
+    ht->capacity = new_ht->capacity;
 
     return 0;
 }
