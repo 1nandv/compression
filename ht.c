@@ -76,7 +76,7 @@ static const char
 const char *ht_set(ht_t *ht, const char *key, void *value)
 {
     if(ht->length >= ht->capacity / 2)
-        if(!ht_grow(ht)) return NULL;
+        if(ht_grow(ht) != 0) return NULL;
 
     uint32_t hash = ht_hash_key(key);
     size_t index = (size_t)(hash & (uint32_t)(ht->capacity - 1));
