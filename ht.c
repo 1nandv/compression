@@ -114,3 +114,30 @@ uint8_t ht_grow(ht_t *ht)
 
     return 0;
 }
+
+ht_iter_t *ht_iter_new(ht_t *ht)
+{
+    ht_iter_t *ht_iter = malloc(sizeof(ht_iter_t));
+    ht_iter->ht = ht;
+    ht_iter->index = 0;
+    return ht_iter;
+}
+
+void ht_iter_free(ht_iter_t *ht_iter)
+{
+    free(ht_iter);
+}
+
+ht_entry_t *ht_iter_next(ht_iter_t *ht_iter)
+{
+    ht_t *ht = ht_iter->ht;
+
+    while(ht_iter->index <= ht->capacity) {
+        size_t index = ht_iter->index;
+        ht_iter->index++;
+        if(ht->entries[index].key != NULL)
+            return &ht_iter->ht->entries[index];
+    }
+
+    return NULL;
+}
