@@ -21,6 +21,8 @@ typedef struct {
 } ht_iter_t;
 
 static uint32_t ht_hash_key(const char *key);
+static const char 
+*ht_set_entry(ht_t *ht, size_t index, const char *key, void *value);
 
 ht_t *ht_new(void);
 void ht_free(ht_t *ht);

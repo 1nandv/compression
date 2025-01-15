@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "ht.h"
@@ -63,6 +64,15 @@ void *ht_get(ht_t *ht, const char *key)
     return NULL;
 }
 
+static const char 
+*ht_set_entry(ht_t *ht, size_t index, const char *key, void *value)
+{
+    ht->entries[index].key = strdup(key);
+    ht->entries[index].value = value;
+    ht->length++; 
+    return ht->entries[index].key;
+}
+
 const char *ht_set(ht_t *ht, const char *key, void *value)
 {
     if(ht->length >= ht->capacity / 2)
@@ -83,11 +93,7 @@ const char *ht_set(ht_t *ht, const char *key, void *value)
             index = 0;
     }
 
-    ht->entries[index].key = strdup(key);
-    ht->entries[index].value = value;
-    ht->length++; 
-
-    return ht->entries[index].key;
+    return ht_set_entry(ht, index, key, value);
 }
 
 uint8_t ht_grow(ht_t *ht)
@@ -105,7 +111,7 @@ uint8_t ht_grow(ht_t *ht)
 
     for(size_t i = 0; i < ht->capacity; i++) {
         if(ht->entries[i].key != NULL)
-            ht_set(new_ht, ht->entries[i].key, ht->entries[i].value);
+            ht_set_entry(new_ht, i, ht->entries[i].key, ht->entries[i].value);
     }
 
     free(ht->entries);
